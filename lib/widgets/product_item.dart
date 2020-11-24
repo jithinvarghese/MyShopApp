@@ -12,9 +12,9 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      // final productItem = Provider.of<Product>(context);
-    return Consumer<Product>(
-      builder :(ctx,productItem,child) => ClipRRect(
+      final productItem = Provider.of<Product>(context,listen: false);
+      print('product rebuild');
+    return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
         child: GestureDetector(
@@ -37,13 +37,16 @@ class ProductItem extends StatelessWidget {
           // },
         ),
         header: GridTileBar(
-          leading: IconButton(
+            leading: Consumer<Product>(
+            builder :(ctx,productItem,child) => IconButton(
             icon: Icon(productItem.isFavorite ? Icons.favorite : Icons.favorite_border_outlined ),
             color: Theme.of(context).accentColor,
             onPressed: () {
               productItem.btnFavoritesPressed();
             },
           ),
+          ),
+          child:Text('Never chnages!'),
         ),
         footer: GridTileBar(
           trailing: IconButton(
@@ -58,7 +61,6 @@ class ProductItem extends StatelessWidget {
           )),
         ),
       ),
-    ),
     );
   }
 }
