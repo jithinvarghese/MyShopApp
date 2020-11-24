@@ -1,7 +1,7 @@
 // Add mix in vribable.mic is like mergin or lityye inheritance
 import 'package:flutter/material.dart';
 
-import '../model/product.dart';
+import './product.dart';
 
 class Products with ChangeNotifier {
   List<Product> _items = [
