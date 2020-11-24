@@ -3,17 +3,15 @@ import 'package:provider/provider.dart';
 
 import '../providers/product.dart';
 import '../screens/products_details_screen.dart';
-import '../providers/product.dart';
 
 class ProductItem extends StatelessWidget {
   // final Product productItem;
   // ProductItem(this.productItem);
-  
 
   @override
   Widget build(BuildContext context) {
-      final productItem = Provider.of<Product>(context,listen: false);
-      print('product rebuild');
+    final productItem = Provider.of<Product>(context, listen: false);
+    print('product rebuild');
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -37,16 +35,17 @@ class ProductItem extends StatelessWidget {
           // },
         ),
         header: GridTileBar(
-            leading: Consumer<Product>(
-            builder :(ctx,productItem,child) => IconButton(
-            icon: Icon(productItem.isFavorite ? Icons.favorite : Icons.favorite_border_outlined ),
-            color: Theme.of(context).accentColor,
-            onPressed: () {
-              productItem.btnFavoritesPressed();
-            },
+          leading: Consumer<Product>(
+            builder: (ctx, productItem, _) => IconButton(
+              icon: Icon(productItem.isFavorite
+                  ? Icons.favorite
+                  : Icons.favorite_border_outlined),
+              color: Theme.of(context).accentColor,
+              onPressed: () {
+                productItem.btnFavoritesPressed();
+              },
+            ),
           ),
-          ),
-          child:Text('Never chnages!'),
         ),
         footer: GridTileBar(
           trailing: IconButton(

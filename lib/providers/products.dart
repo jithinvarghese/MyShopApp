@@ -1,4 +1,6 @@
 // Add mix in vribable.mic is like mergin or lityye inheritance
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import './product.dart';
@@ -49,6 +51,10 @@ class Products with ChangeNotifier {
     return [..._items];
   }
 
+  List<Product> get favoriteItems {
+    return _items.where((productItem) => productItem.isFavorite).toList();
+  }
+
   Product findById(String id) {
     return _items.firstWhere((pdt) => pdt.id == id);
   }
@@ -57,7 +63,7 @@ class Products with ChangeNotifier {
   //   _showFavoritesOnly = true;
   //      notifyListeners();
   // }
-   
+
   // void showAll(){
   //   _showFavoritesOnly = false;
   //      notifyListeners();
