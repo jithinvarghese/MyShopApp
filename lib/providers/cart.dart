@@ -62,4 +62,10 @@ class Cart with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void removieItem(String id) {
+    print(_items);
+    _items.remove(id);
+    notifyListeners();
+  }
 }
