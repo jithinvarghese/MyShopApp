@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../providers/cart.dart';
 import '../widgets/cart_item.dart' as ci;
+import '../providers/orders.dart';
+import '../screens/order_screen.dart';
 
 class CartScreen extends StatelessWidget {
   static const screenName = '/cart-screen';
@@ -32,13 +34,20 @@ class CartScreen extends StatelessWidget {
                   Chip(
                     label: Text(
                       // cartItems.cartTotalAmount.toString(), or
-                      '\$${cartItems.cartTotalAmount}',
+                      '\$${cartItems.cartTotalAmount.toStringAsFixed(2)}',
                       style: TextStyle(fontSize: 18),
                     ),
                     backgroundColor: Theme.of(context).primaryColor,
                   ),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Provider.of<Orders>(context,listen: false).addOrders(
+                        cartItems.items.values.toList(),
+                        cartItems.cartTotalAmount,
+                      );
+                      cartItems.cartClear();
+                      Navigator.of(context).pushNamed(OrderScreen.screenName);
+                    },
                     child: Text(
                       'ORDER NOW',
                     ),
