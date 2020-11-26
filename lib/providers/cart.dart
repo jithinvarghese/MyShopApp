@@ -20,6 +20,7 @@ class Cart with ChangeNotifier {
 
   Map<String, CartItem> get items {
     return {..._items};
+
   }
 
   int get cartItemCount {
@@ -69,10 +70,27 @@ class Cart with ChangeNotifier {
     notifyListeners();
   }
 
-void cartClear(){
-  _items = {};
-  notifyListeners();
-}
+  void cartClear() {
+    _items = {};
+    notifyListeners();
+  }
 
-
+  void cartRemovesSingleItem(String productId) {
+    print('key' + productId);
+    if (!_items.containsKey(productId)) {
+      return;
+    }
+    if (_items[productId].qunatity > 1) {
+      _items.update(
+          productId,
+          (existingCartItems) => CartItem(
+                id: existingCartItems.id,
+                title: existingCartItems.title,
+                price: existingCartItems.price,
+                qunatity: existingCartItems.qunatity - 1,
+              ));
+    }else{
+      _items.remove(productId); 
+    }
+  }
 }

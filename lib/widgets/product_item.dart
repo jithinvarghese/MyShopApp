@@ -12,7 +12,7 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productItem = Provider.of<Product>(context, listen: false);
-    final cartItem = Provider.of<Cart>(context,listen: false);
+    final cartItem = Provider.of<Cart>(context, listen: false);
     print('product rebuild');
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
@@ -54,7 +54,21 @@ class ProductItem extends StatelessWidget {
             color: Theme.of(context).accentColor,
             icon: Icon(Icons.shopping_cart_outlined),
             onPressed: () {
-              cartItem.addItem(productItem.id, productItem.price , productItem.title);
+              cartItem.addItem(
+                  productItem.id, productItem.price, productItem.title);
+                   Scaffold.of(context).hideCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Added Item to ccart!'),
+                  duration: Duration(seconds: 2),
+                  action: SnackBarAction(
+                    label: 'UNDO',
+                    onPressed: () {
+                      cartItem.cartRemovesSingleItem(productItem.id);
+                    },
+                  ),
+                ),
+              );
             },
           ),
           backgroundColor: Colors.black38,

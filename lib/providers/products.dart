@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import './product.dart';
 
+
 class Products with ChangeNotifier {
   List<Product> _items = [
     Product(
@@ -48,7 +49,10 @@ class Products with ChangeNotifier {
     // if(showFavoritesOnly){
     //   return _items.where((proditem) => proditem.isFavorite).toList();
     // }
-    return [..._items];
+
+     return [..._items];
+  
+
   }
 
   List<Product> get favoriteItems {
