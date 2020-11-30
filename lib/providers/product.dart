@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Product with ChangeNotifier {
   final String id;
@@ -17,8 +18,19 @@ class Product with ChangeNotifier {
       @required this.imageUrl,
       this.isFavorite = false});
 
-  void btnFavoritesPressed() {
+  Future<void> btnFavoritesPressed() async {
+    // optimised updating pattern
+    final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
+    final url = 'https://shoppapp-39210.firebaseio.com/products/$id.json';
+    try {
+      http.patch(url,
+          body: json.encode({
+            'isFavorite': isFavorite,
+          }));
+    } catch (error) {
+      isFavorite = oldStatus;
+    }
   }
 }
