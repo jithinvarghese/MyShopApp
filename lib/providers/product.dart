@@ -18,19 +18,30 @@ class Product with ChangeNotifier {
       @required this.imageUrl,
       this.isFavorite = false});
 
-  Future<void> btnFavoritesPressed() async {
+  Future<void> btnFavoritesPressed(String authToken) async {
     // optimised updating pattern
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
-    final url = 'https://shoppapp-39210.firebaseio.com/products/$id.json';
+    final url = 'https://shoppapp-39210.firebaseio.com/products/$id.json?auth=$authToken';
     try {
-      http.patch(url,
-          body: json.encode({
-            'isFavorite': isFavorite,
-          }));
+      // [atch means update the data]
+      final response = await http.patch(
+        url,
+        body: json.encode({
+          'isFavorite': isFavorite,
+        }),
+      );
+      if (response.statusCode >= 400) {
+        _setFavValue(oldStatus);
+      }
     } catch (error) {
-      isFavorite = oldStatus;
+      _setFavValue(oldStatus);
     }
+  }
+
+  void _setFavValue(bool newValue) {
+    isFavorite = newValue;
+    notifyListeners();
   }
 }

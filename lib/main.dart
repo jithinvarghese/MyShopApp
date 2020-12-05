@@ -7,9 +7,11 @@ import './screens/cart_screen.dart';
 import './screens/order_screen.dart';
 import './screens/user_products_screen.dart';
 import './screens/edit_products.dart';
+import './screens/auth_screen.dart';
 import './providers/products.dart';
 import './providers/cart.dart';
 import './providers/orders.dart';
+import './providers/auth.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,30 +24,42 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => Products(),
+          create: (ctx) => Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, Products>(
+          update: (ctx, auth, prevousProducts) => Products(
+              auth.token, prevousProducts == null ? [] : prevousProducts.items),
+          create: null,
         ),
         ChangeNotifierProvider(
           create: (ctx) => Cart(),
         ),
-        ChangeNotifierProvider(
-          create: (ctx) => Orders(),
+        ChangeNotifierProxyProvider<Auth, Orders>(
+          update: (ctx, auth, prevousProducts) => Orders(
+            auth.token,
+            prevousProducts == null ? [] : prevousProducts.orders,
+          ),
+          create: null,
         ),
       ],
-      child: MaterialApp(
-        title: 'MyShopApp',
-        theme: ThemeData(
-          primarySwatch: Colors.orange,
-          accentColor: Colors.deepOrange,
-          fontFamily: 'Lato',
+      child: Consumer<Auth>(
+        builder: (ctx, auth, _) => MaterialApp(
+          title: 'MyShopApp',
+          theme: ThemeData(
+            primarySwatch: Colors.orange,
+            accentColor: Colors.deepOrange,
+            fontFamily: 'Lato',
+          ),
+          // home: AuthScreen(),
+          routes: {
+            '/': (ctx) => auth.isAuth ? ProductOverviewScreen() : AuthScreen(),
+            ProductsDetailsScreen.screenName: (ctx) => ProductsDetailsScreen(),
+            CartScreen.screenName: (ctx) => CartScreen(),
+            OrderScreen.screenName: (ctx) => OrderScreen(),
+            UserProductsScreen.screenName: (ctx) => UserProductsScreen(),
+            EditProductsScreen.screenName: (ctx) => EditProductsScreen(),
+          },
         ),
-        home: ProductOverviewScreen(),
-        routes: {
-          ProductsDetailsScreen.screenName: (ctx) => ProductsDetailsScreen(),
-          CartScreen.screenName: (ctx) => CartScreen(),
-          OrderScreen.screenName: (ctx) => OrderScreen(),
-          UserProductsScreen.screenName: (ctx) => UserProductsScreen(),
-          EditProductsScreen.screenName: (ctx) => EditProductsScreen(),
-        },
       ),
     );
   }

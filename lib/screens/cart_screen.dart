@@ -39,20 +39,7 @@ class CartScreen extends StatelessWidget {
                     ),
                     backgroundColor: Theme.of(context).primaryColor,
                   ),
-                  FlatButton(
-                    onPressed: () {
-                      Provider.of<Orders>(context,listen: false).addOrders(
-                        cartItems.items.values.toList(),
-                        cartItems.cartTotalAmount,
-                      );
-                      cartItems.cartClear();
-                      Navigator.of(context).pushNamed(OrderScreen.screenName);
-                    },
-                    child: Text(
-                      'ORDER NOW',
-                    ),
-                    textColor: Theme.of(context).accentColor,
-                  ),
+                  OrderButton(cartItems: cartItems),
                 ],
               ),
             ),
@@ -68,6 +55,55 @@ class CartScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    Key key,
+    @required this.cartItems,
+  }) : super(key: key);
+
+  final Cart cartItems;
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var _isloading = false;
+
+  @override
+  void setState(fn) {
+    super.setState(fn);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      onPressed: (widget.cartItems.cartTotalAmount <= 0 || _isloading)
+          ? null
+          : () async {
+              setState(() {
+                _isloading = true;
+              });
+              await Provider.of<Orders>(context, listen: false).addOrders(
+                widget.cartItems.items.values.toList(),
+                widget.cartItems.cartTotalAmount,
+              );
+              setState(() {
+                _isloading = false;
+              });
+              widget.cartItems.cartClear();
+              Navigator.of(context).pushNamed(OrderScreen.screenName);
+            },
+      child: _isloading
+          ? CircularProgressIndicator()
+          : Text(
+              'ORDER NOW',
+            ),
+      textColor: Theme.of(context).accentColor,
     );
   }
 }
